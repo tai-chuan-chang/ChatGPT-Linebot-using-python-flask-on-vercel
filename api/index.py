@@ -2,16 +2,17 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from api.chatgpt import ChatGPT
+
+from api.chatllm import ChatLLM  # ← 換成 DeepSeek 的 LLM 封裝
 
 import os
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
-working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
+working_status = os.getenv("DEFALUT_TALKING", default="true").lower() == "true"
 
 app = Flask(__name__)
-chatgpt = ChatGPT()
+chatgpt = ChatLLM()  # ← 改這裡（用新的 ChatLLM）
 
 # domain root
 @app.route('/')
@@ -20,12 +21,9 @@ def home():
 
 @app.route("/webhook", methods=['POST'])
 def callback():
-    # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-    # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    # handle webhook body
     try:
         line_handler.handle(body, signature)
     except InvalidSignatureError:
