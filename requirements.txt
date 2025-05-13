@@ -1,4 +1,9 @@
+# Web framework
 flask==2.2.2
 Werkzeug==2.3.7
-line-bot-sdk
-openai
+
+# LINE Bot SDK
+line-bot-sdk==2.4.2
+
+# 用來發送 HTTP 請求到 DeepSeek API
+requests==2.31.0
