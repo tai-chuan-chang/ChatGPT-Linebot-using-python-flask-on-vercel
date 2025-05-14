@@ -6,8 +6,10 @@ from api.deepseek import DeepSeek  # 修改導入的類
 
 import os
 
-line_bot_api = LineBotApi(os.getenv("FpdNfeUp58OCtnjGKgtA6K+0eNZI8XhS6Ov5isHB2Kg/lmHnyng7DcLu3PRDgZSwHSXkAqOm0rNOcVqOCQPcp80Yo1o4jteqMA5j3dA6gs5CD3aBnn0MdyM+vLyXdpmdpir6h1r/s38NLylI5zTFMwdB04t89/1O/w1cDnyilFU="))
-line_handler = WebhookHandler(os.getenv("f917b362eda1465eec9709359c397c68"))
+line_bot_api = LineBotApi(os.getenv("FpdNfeUp58OCtnjGKgtA6K+0eNZI8XhS6Ov5isHB2Kg/lmHnyng7DcLu3PRDgZSwHSXkAqOm0rNOcVqOCQPcp80Yo1o4jteqMA5j3dA6gs5CD3aBnn0MdyM+vLyXdpmdpir6h1r/s38NLylI5zTFMwdB04t89/1O/w1cDnyilFU="))  
+//LINE_CHANNEL_ACCESS_TOKEN 
+line_handler = WebhookHandler(os.getenv("f917b362eda1465eec9709359c397c68")) 
+//LINE_CHANNEL_SECRET 
 working_status = os.getenv("DEFAULT_TALKING", default="true").lower() == "true"
 
 app = Flask(__name__)
