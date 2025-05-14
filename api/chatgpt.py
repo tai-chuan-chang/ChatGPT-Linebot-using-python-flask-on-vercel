@@ -8,7 +8,7 @@ class DeepSeek:
         self.model = os.getenv("DEEPSEEK_MODEL", default="deepseek-chat")  # 預設模型
         self.temperature = float(os.getenv("DEEPSEEK_TEMPERATURE", default=0.7))
         self.max_tokens = int(os.getenv("DEEPSEEK_MAX_TOKENS", default=2048))
-        self.api_key = os.getenv("DEEPSEEK_API_KEY")
+        self.api_key = os.getenv("sk-0cb99e089f104f8f89cc3d4858552b90") #deepseek api key
         self.api_base = os.getenv("DEEPSEEK_API_BASE", default="https://api.deepseek.com/v1")  # API 基礎 URL
 
     def get_response(self):
