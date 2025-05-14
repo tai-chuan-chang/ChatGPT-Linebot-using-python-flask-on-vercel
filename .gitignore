@@ -1,13 +1,19 @@
-.vercel
+# Vercel 部署相關
+.vercel/
 *.log
-*.pyc
-__pycache__
 
-# Environments 
-.env 
-.venv 
-env/ 
-venv/ 
-ENV/ 
-env.bak/ 
-venv.bak/ 
+# Python 緩存和虛擬環境
+*.py[cod]
+__pycache__/
+*.so
+.Python
+.env/
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# 專案特定（可選）
+.DS_Store           # macOS 系統文件
