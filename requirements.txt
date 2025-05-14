@@ -1,4 +1,4 @@
 flask==2.2.2
 Werkzeug==2.3.7
-line-bot-sdk
-openai
+line-bot-sdk>=2.4.1
+requests>=2.31.0  # 用於 DeepSeek API 請求
