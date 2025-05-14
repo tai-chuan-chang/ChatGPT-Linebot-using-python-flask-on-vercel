@@ -2,21 +2,21 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from api.chatgpt import ChatGPT
+from api.deepseek import DeepSeek  # 修改導入的類
 
 import os
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 line_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
-working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
+working_status = os.getenv("DEFAULT_TALKING", default="true").lower() == "true"
 
 app = Flask(__name__)
-chatgpt = ChatGPT()
+deepseek_bot = DeepSeek()  # 實例化 DeepSeek 而不是 ChatGPT
 
 # domain root
 @app.route('/')
 def home():
-    return 'Hello, World!'
+    return 'Hello, World! This is a DeepSeek-powered Line bot!'
 
 @app.route("/webhook", methods=['POST'])
 def callback():
@@ -32,35 +32,45 @@ def callback():
         abort(400)
     return 'OK'
 
-
 @line_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     global working_status
     if event.message.type != "text":
         return
 
-    if event.message.text == "說話":
+    # 指令處理
+    if event.message.text.lower() == "說話":
         working_status = True
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="我可以說話囉，歡迎來跟我互動 ^_^ "))
+            TextSendMessage(text="我可以說話囉，現在由 DeepSeek 提供智慧支持！歡迎來跟我互動 ^_^ "))
         return
 
-    if event.message.text == "閉嘴":
+    if event.message.text.lower() == "閉嘴":
         working_status = False
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="好的，我乖乖閉嘴 > <，如果想要我繼續說話，請跟我說 「說話」 > <"))
+            TextSendMessage(text="好的，我乖乖閉嘴 > <，如果想要我繼續說話，請跟我說「說話」"))
         return
 
     if working_status:
-        chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
-        reply_msg = chatgpt.get_response().replace("AI:", "", 1)
-        chatgpt.add_msg(f"AI:{reply_msg}\n")
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=reply_msg))
-
+        # 添加用戶消息到對話歷史
+        deepseek_bot.add_msg(f"User: {event.message.text}")
+        
+        # 獲取 DeepSeek 的回應
+        try:
+            reply_msg = deepseek_bot.get_response()
+            # 添加 AI 回應到對話歷史
+            deepseek_bot.add_msg(f"Assistant: {reply_msg}")
+            
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply_msg))
+        except Exception as e:
+            app.logger.error(f"DeepSeek API 錯誤: {str(e)}")
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="抱歉，處理您的請求時出現問題，請稍後再試。"))
 
 if __name__ == "__main__":
     app.run()
