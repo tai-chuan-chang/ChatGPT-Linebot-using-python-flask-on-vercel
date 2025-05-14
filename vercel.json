@@ -1,15 +1,25 @@
 {
   "version": 2,
   "builds": [
-      {
-          "src": "api/index.py",
-          "use": "@vercel/python"
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",  // 確保足夠的函數大小
+        "runtime": "python3.9"     // 指定 Python 版本
       }
+    }
   ],
   "routes": [
-      {
-        "src": "/(.*)", 
-        "dest": "api/index.py"
-      }
+    {
+      "src": "/webhook",          // 明確指定 Line Webhook 路由
+      "dest": "api/index.py",
+      "methods": ["POST"]         // 限制僅接受 POST 請求
+    },
+    {
+      "src": "/",                 // 根路由（用於健康檢查）
+      "dest": "api/index.py",
+      "methods": ["GET"]
+    }
   ]
 }
